@@ -22,17 +22,41 @@ http.createServer((req, res) => {
             <input id='inp'>
             <button id='bt' onclick='handlerClick()'>Кнопка</button>
             <script>
-            async function handlerClick (){
+            function handlerClick (){
                 let inp = document.querySelector('#inp')
-                response = await fetch(inp.value)
-                inp.value = await response.text()
+                fetch(inp.value)
+                .then(response=>response.text())
+                .then(result => inp.value = result)
             }
             </script>
             `
         )
         res.end()
-    } else
+    } else if(req.url === '/result4/') {
+        res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' ,
+         'Access-Control-Allow-Origin': '*',
+         'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+         'Access-Control-Allow-Headers': 'x-test,Content-Type,Accept,Access-Control-Allow-Headers'});
+     
+        let body = ''
+        req.on("data", data => {
+            body += data;
+        });
+
+        req.on("end", () => {
+            const x_result = req.headers['x-test']
+            const x_body = body
+            res.write(JSON.stringify({
+                        'message': 'itmo371919',
+                        'x-result': x_result,
+                        "x-body": x_body,
+                    }))
+            res.end()
+            });
+    }
+    else
     {
         res.end();
-    }  
+    } 
+    
 }).listen(3000)
